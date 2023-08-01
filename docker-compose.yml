@@ -1,0 +1,14 @@
+version: '1.0.0'
+
+services:
+  reload:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        ENV: dev
+    volumes:
+      - ./:/app/
+    ports:
+      - 9000:9000

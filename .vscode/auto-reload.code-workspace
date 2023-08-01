@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "path": "../"
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.tabWidth": 1,
+    "cSpell.words": ["millis"]
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "orta.vscode-jest",
+      "streetsidesoftware.code-spell-checker",
+      "rubymaniac.vscode-direnv"
+    ]
+  }
+}

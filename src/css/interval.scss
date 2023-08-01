@@ -1,0 +1,46 @@
+$height: 185px;
+
+body {
+  width: 400px;
+  min-height: $height;
+}
+
+.content {
+  display: flex;
+  min-height: $height;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.page-content {
+  min-height: 113px;
+}
+
+.time-separator {
+  padding: 0px 5px;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.input-wrapper {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.input-div {
+  width: 33%;
+}
+
+.input-desc {
+  font-size: 10px;
+  padding-left: 5px;
+  padding-top: 2px;
+}
+
+.input-title {
+  margin-bottom: 0.5em;
+}

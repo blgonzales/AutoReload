@@ -1,0 +1,12 @@
+version: '1.0.0'
+
+services:
+  reload:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build
+      args:
+        ENV: build
+    volumes:
+      - ./:/app/
