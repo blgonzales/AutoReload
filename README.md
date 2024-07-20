@@ -3,6 +3,9 @@
 AutoReload Firefox extension, built to enable the ability to reload browser tabs automatically after a specified interval. Idle timeout support. Built in typescript using react, webpack, bootstrap, and browser runtime API.
 
 ![screenshot](./docs/screenshot.png)
+![screenshot](./docs/screenshot2.png)
+
+Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies
 
