@@ -4,8 +4,13 @@
 
 node_modules
 yarn-error.log
-.yarn
-.yarnrc.yml
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 dist/
 release/
