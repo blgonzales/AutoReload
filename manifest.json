@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "AutoReload",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "An extension that automatically reloads the specified tabs.",
   "icons": {
     "48": "icons/48.png",

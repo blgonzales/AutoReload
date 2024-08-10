@@ -138,3 +138,5 @@ export const getLogger = () => {
       console.error(`${prefix}[ERROR] ${message}`, ...args),
   };
 };
+
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
