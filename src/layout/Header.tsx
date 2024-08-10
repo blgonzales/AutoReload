@@ -1,6 +1,6 @@
 import React from 'react';
 import Logo from '../images/icon.svg';
-import SettingsIcon from '../images/settings.svg';
+import SettingsIcon from './SettingsIcon';
 import ToggleSwitch from '../components/ToggleSwitch';
 import { useTabContext } from '../components/TabProvider';
 import { Navbar } from 'react-bootstrap';
@@ -52,16 +52,15 @@ const Header = () => {
           <ToggleSwitch
             enabled={tabData.enabled}
             onChange={handleIsEnabled}
-            title={`${
-              tabData.enabled ? 'Disable' : 'Enable'
-            } AutoReload for the Current Tab`}
+            title={`${tabData.enabled ? 'Disable' : 'Enable'} AutoReload for the Current Tab`}
           />
-          <img
-            src={SettingsIcon}
+          <div
             title="Toggle Settings"
             onClick={handleSettingsToggle}
             style={{ cursor: 'pointer' }}
-          />
+          >
+            <SettingsIcon />
+          </div>
         </div>
       </Navbar>
     </>

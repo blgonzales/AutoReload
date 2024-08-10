@@ -8,6 +8,7 @@ import React, {
 import {
   AppStateType,
   ClientBrowserMessage,
+  isDarkMode,
   isExtension as isExtensionCheck,
 } from '../common';
 import { appStateHandler, updateAppState } from '../client';
@@ -18,12 +19,14 @@ export type AppContextType = {
   setSettingsMode: (enabled: boolean) => void;
   appState: AppStateType;
   setAppState: (data: AppStateType) => void;
+  darkMode: boolean;
 };
 
 export const AppContext = createContext<AppContextType>({} as AppContextType);
 export const useAppContext = () => useContext(AppContext) as AppContextType;
 
 const isExtension = isExtensionCheck();
+const darkMode = isDarkMode();
 
 export const AppProvider = (props: { children: any }) => {
   const [settingsMode, setSettingsMode] = useState(false);
@@ -68,6 +71,7 @@ export const AppProvider = (props: { children: any }) => {
         setSettingsMode,
         appState,
         setAppState: handleAppStateUpdate,
+        darkMode
       }}
     >
       {props.children}

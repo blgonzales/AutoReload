@@ -114,6 +114,8 @@ export const convertIntervalToTimeoutInterval = (
 
 export const isExtension = () => window.browser !== undefined;
 
+export const isDarkMode = () => window.matchMedia && !!window.matchMedia('(prefers-color-scheme: dark)').matches;
+
 export const getLogger = () => {
   const prefix = '[AutoReload]';
 
