@@ -1,5 +1,4 @@
 import BrowserTab from './BrowserTab';
-import { defaultEnabled, defaultInterval } from '../config';
 import { AppStateType, SettingsType, getLogger } from '../common';
 
 export default class ReloadManager {

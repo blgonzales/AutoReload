@@ -3,6 +3,7 @@ import {
   TabStateType,
   convertIntervalToTimeoutInterval,
   getLogger,
+  sleep,
 } from '../common';
 
 export default class BrowserTab {
@@ -34,7 +35,7 @@ export default class BrowserTab {
 
     const timeout = convertIntervalToTimeoutInterval(this.interval);
 
-    this.timer = setInterval(() => this.reload(), timeout);
+    this.timer = setInterval(async () => await this.reload(), timeout);
     this.enabled = true;
 
     getLogger().debug(
@@ -72,8 +73,20 @@ export default class BrowserTab {
     }
   }
 
-  reload() {
+  setAddonIcon(image: string) {
+    browser.browserAction.setIcon({
+      path: image,
+      tabId: this.tabId,
+    });
+  }
+
+  async reload() {
     getLogger().debug(`Reloading tab ${this.tabId}`);
-    browser.tabs.reload(this.tabId);
+    this.setAddonIcon("icons/loading.gif");
+
+    await browser.tabs.reload(this.tabId);
+
+    await sleep(5000);
+    this.setAddonIcon("icons/48.png")
   }
 }
