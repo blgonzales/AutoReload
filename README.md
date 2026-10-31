@@ -5,6 +5,16 @@ AutoReload Firefox extension, built to enable the ability to reload browser tabs
 ![screenshot](./docs/screenshot.png)
 ![screenshot](./docs/screenshot2.png)
 
+## Works with Auto Tab Discard: keep reloading tabs loaded (tab discarding, memory saver)
+
+Add-ons such as Auto Tab Discard, and Firefox's own memory saver, unload ("discard") background tabs that have been idle for a while. A tab that is only restored from the unloaded state is not fetched from the server, so an auto-reloading tab could silently stop updating.
+
+AutoReload now keeps the tabs it is reloading loaded. This is on by default; the checkbox **Keep reloading tabs loaded** in Settings turns it off.
+
+- While AutoReload is running for a tab, that tab is marked "do not discard" (the standard `autoDiscardable` flag, which Firefox and Auto Tab Discard both respect). When you turn AutoReload off for the tab, or close it, the previous value is restored. A tab you already marked "keep" yourself is left as it was.
+- If a tab is unloaded anyway (for example by hand), the next scheduled reload loads it and then reloads it again so the page really comes from the server.
+- No new permission is needed. Firefox 116 or newer is required for the flag; on older versions AutoReload behaves as before.
+
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies

@@ -1,11 +1,15 @@
 import BrowserTab from './BrowserTab';
+import KeepLoaded from './KeepLoaded';
 import { AppStateType, SettingsType, getLogger } from '../common';
 
 export default class ReloadManager {
   private browserTabs;
   private idleTimer: ReturnType<typeof setInterval> | null;
 
-  constructor() {
+  private keepLoaded?: KeepLoaded;
+
+  constructor(keepLoaded?: KeepLoaded) {
+    this.keepLoaded = keepLoaded;
     this.browserTabs = new Map<number, BrowserTab>();
     this.idleTimer = null;
   }
@@ -55,7 +59,8 @@ export default class ReloadManager {
       currentTab = new BrowserTab(
         tabId,
         settings.defaultInterval,
-        settings.defaultEnabled
+        settings.defaultEnabled,
+        this.keepLoaded
       );
       this.browserTabs.set(tabId, currentTab);
     }
