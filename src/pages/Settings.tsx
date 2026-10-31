@@ -66,6 +66,19 @@ const Settings = () => {
     });
   };
 
+  const handleTimingChange = (
+    key: 'skipReloadWhileLoading' | 'restartTimerOnManualLoad',
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setAppState({
+      ...appState,
+      defaultSettings: {
+        ...appState.defaultSettings,
+        [key]: event.currentTarget.checked,
+      },
+    });
+  };
+
   const handleResetToDefault = () => {
     setAppState({
       ...appState,
@@ -108,10 +121,11 @@ const Settings = () => {
         >
           {defaultIdleIntervals.map((interval) => {
             return (
-              <option
-                key={interval.value}
-                value={interval.value}
-              >{`${interval.hours}hrs, ${interval.minutes}min`}</option>
+              <option key={interval.value} value={interval.value}>
+                {interval.value === 0
+                  ? 'Never'
+                  : `${interval.hours}hrs, ${interval.minutes}min`}
+              </option>
             );
           })}
         </Form.Select>
@@ -124,6 +138,28 @@ const Settings = () => {
           title="Start AutoReload by default when opening"
           onChange={handleDefaultChange}
           checked={appState.defaultSettings.defaultEnabled}
+        />
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Check
+          type="checkbox"
+          id="skip-reload-while-loading"
+          label="Don't reload while the page is still loading"
+          title="Skip a scheduled reload if the tab has not finished loading yet"
+          onChange={(event) =>
+            handleTimingChange('skipReloadWhileLoading', event)
+          }
+          checked={appState.defaultSettings.skipReloadWhileLoading}
+        />
+        <Form.Check
+          type="checkbox"
+          id="restart-timer-on-manual-load"
+          label="Restart the countdown when I reload or navigate the tab myself"
+          title="Start the interval over when the tab is loaded by something other than AutoReload"
+          onChange={(event) =>
+            handleTimingChange('restartTimerOnManualLoad', event)
+          }
+          checked={appState.defaultSettings.restartTimerOnManualLoad}
         />
       </Form.Group>
       <Form.Group className="d-flex ms-auto justify-content-end">

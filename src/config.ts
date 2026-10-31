@@ -21,10 +21,15 @@ export const disableAfterIdleStateThreshold: Interval = {
   millis: 0,
 };
 
+export const skipReloadWhileLoading = false;
+export const restartTimerOnManualLoad = false;
+
 export const getAppDefaults = (): SettingsType => ({
   defaultEnabled: defaultEnabled,
   defaultInterval: defaultInterval,
   defaultIdleTimeout: disableAfterIdleStateThreshold,
+  skipReloadWhileLoading: skipReloadWhileLoading,
+  restartTimerOnManualLoad: restartTimerOnManualLoad,
 });
 
 export const getDefaultIdleTimeout = async (): Promise<Interval> =>

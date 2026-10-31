@@ -45,6 +45,8 @@ export type SettingsType = {
   defaultInterval: Interval;
   defaultIdleTimeout: Interval;
   defaultEnabled: boolean;
+  skipReloadWhileLoading: boolean;
+  restartTimerOnManualLoad: boolean;
 };
 
 export const getDefaultIntervalSettings = (): IntervalValue[] => {
@@ -92,6 +94,9 @@ export const getDefaultIdleTimeoutSettings = (): IntervalValue[] => {
       millis: 0,
     });
   }
+
+  // all zero = "Never": don't switch off when away
+  result.push({ hours: 0, minutes: 0, seconds: 0, millis: 0 });
 
   return result.map(
     (interval): IntervalValue => ({
