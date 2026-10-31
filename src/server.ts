@@ -9,6 +9,7 @@ import {
 } from './common';
 import { getAppDefaults } from './config';
 import ReloadManager from './util/ReloadManager';
+import { activityLog, recordSettingsChange } from './util/ActivityLog';
 
 export const sendRequest = (message: ClientBrowserMessage) => {
   getLogger().verbose(`[Server] Send request`, message);
@@ -53,6 +54,7 @@ export const handleRequest = async (
         return;
       }
 
+      reloadManager.clearIdlePause();
       tab.update(event.data as TabStateType);
       sendAppState(reloadManager);
       break;
@@ -60,9 +62,15 @@ export const handleRequest = async (
     case 'updateAppState':
       const appState = event.data as AppStateType;
 
+      reloadManager.clearIdlePause();
       reloadManager.update(appState);
 
       if (appState.defaultSettings !== undefined) {
+        recordSettingsChange(
+          activityLog,
+          await getSettings(),
+          appState.defaultSettings
+        );
         saveSettings(appState.defaultSettings);
       }
       sendAppState(reloadManager);
