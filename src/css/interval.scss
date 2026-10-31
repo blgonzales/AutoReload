@@ -44,3 +44,8 @@ body {
 .input-title {
   margin-bottom: 0.5em;
 }
+
+// the header logo is a black SVG: invert it on the dark popup theme
+[data-bs-theme='dark'] .navbar-brand img {
+  filter: invert(1);
+}

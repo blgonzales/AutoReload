@@ -80,6 +80,12 @@ export default class BrowserTab {
     });
   }
 
+  // drop the tab-specific icon so the manifest icon (with its light/dark
+  // theme_icons variants) shows again
+  resetAddonIcon() {
+    browser.browserAction.setIcon({ tabId: this.tabId });
+  }
+
   async reload() {
     getLogger().debug(`Reloading tab ${this.tabId}`);
     this.setAddonIcon("icons/loading.gif");
@@ -87,6 +93,6 @@ export default class BrowserTab {
     await browser.tabs.reload(this.tabId);
 
     await sleep(5000);
-    this.setAddonIcon("icons/48.png")
+    this.resetAddonIcon();
   }
 }

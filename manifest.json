@@ -14,6 +14,10 @@
   },
   "browser_action": {
     "default_icon": "icons/48.png",
+    "theme_icons": [
+      { "light": "icons/light-16.png", "dark": "icons/16.png", "size": 16 },
+      { "light": "icons/light-32.png", "dark": "icons/32.png", "size": 32 }
+    ],
     "default_title": "AutoReload",
     "default_popup": "index.html"
   },
