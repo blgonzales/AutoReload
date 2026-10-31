@@ -13,6 +13,7 @@ const config: webpack.Configuration = {
   entry: {
     app: './src/app.ts',
     popup: './src/App.tsx',
+    activity: './src/ActivityApp.tsx',
   },
   output: {
     filename: '[name].js',
@@ -25,6 +26,7 @@ const config: webpack.Configuration = {
       patterns: [
         { from: './manifest.json', to: './' },
         { from: './src/index.html', to: './' },
+        { from: './src/activity.html', to: './' },
         { from: './public', to: './' },
       ],
     }),

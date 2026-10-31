@@ -5,6 +5,10 @@ AutoReload Firefox extension, built to enable the ability to reload browser tabs
 ![screenshot](./docs/screenshot.png)
 ![screenshot](./docs/screenshot2.png)
 
+## Activity log: see when the page was reloaded
+
+Open **Activity log** at the bottom of the popup to see what AutoReload has done: every reload (reload history), timers started and stopped and why, settings changes (old to new), idle pauses and errors. A summary at the top shows which tabs are running and when each reloads next, so you can see that auto refresh is working, or debug auto refresh when it is not. Filter by tab or event, copy it as text or download it for a bug report. It is kept in memory only, shows host names rather than full URLs unless you ask, and is cleared when the browser restarts.
+
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies

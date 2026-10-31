@@ -1,13 +1,43 @@
-import BrowserTab from './BrowserTab';
+import BrowserTab, { BrowserTabDeps } from './BrowserTab';
 import { AppStateType, SettingsType, getLogger } from '../common';
+import { ActivityRecorder, IdleStatus, activityLog, formatMs } from './ActivityLog';
+
+export type ReloadManagerDeps = {
+  log: ActivityRecorder;
+  now: () => number;
+  tabDeps: Partial<BrowserTabDeps>;
+};
 
 export default class ReloadManager {
   private browserTabs;
   private idleTimer: ReturnType<typeof setInterval> | null;
+  private idleDueAt: number | null = null;
+  private pausedByIdle = false;
+  private deps: ReloadManagerDeps;
 
-  constructor() {
+  constructor(deps: Partial<ReloadManagerDeps> = {}) {
     this.browserTabs = new Map<number, BrowserTab>();
     this.idleTimer = null;
+    this.deps = { log: activityLog, now: Date.now, tabDeps: {}, ...deps };
+  }
+
+  /** The user changed something by hand, so "paused by idle" no longer applies. */
+  clearIdlePause() {
+    this.pausedByIdle = false;
+  }
+
+  getBrowserTabs(): BrowserTab[] {
+    return Array.from(this.browserTabs.values());
+  }
+
+  getIdleStatus(): IdleStatus {
+    if (this.idleTimer !== null) {
+      return { state: 'idle-pending', pausesAt: this.idleDueAt };
+    }
+    if (this.pausedByIdle && this.getNumberOfEnabledTabs() === 0) {
+      return { state: 'paused-by-idle' };
+    }
+    return { state: 'active' };
   }
 
   getNumberOfTabs() {
@@ -55,7 +85,8 @@ export default class ReloadManager {
       currentTab = new BrowserTab(
         tabId,
         settings.defaultInterval,
-        settings.defaultEnabled
+        settings.defaultEnabled,
+        { log: this.deps.log, now: this.deps.now, ...this.deps.tabDeps }
       );
       this.browserTabs.set(tabId, currentTab);
     }
@@ -72,22 +103,22 @@ export default class ReloadManager {
   }
 
   deleteBrowserTab(browserTab: BrowserTab) {
-    browserTab.clearTimer();
+    browserTab.clearTimer('tab closed');
 
     this.browserTabs.delete(browserTab.getTabId());
   }
 
-  enable() {
+  enable(reason: string = 'global switch turned on') {
     for (const [, browserTab] of this.browserTabs) {
       if (!browserTab.isEnabled()) {
-        browserTab.createTimer();
+        browserTab.createTimer(reason);
       }
     }
   }
 
-  disable() {
+  disable(reason: string = 'global switch turned off') {
     for (const [, browserTab] of this.browserTabs) {
-      browserTab.clearTimer();
+      browserTab.clearTimer(reason);
     }
   }
 
@@ -100,9 +131,18 @@ export default class ReloadManager {
     if (data.enabled !== this.isEnabled()) {
       if (data.enabled) {
         getLogger().debug('Enabling all registered auto reload tabs');
+        this.pausedByIdle = false;
+        this.deps.log.record(
+          'global',
+          `Global switch turned on for ${this.getNumberOfTabs()} registered tab(s)`
+        );
         this.enable();
       } else {
         getLogger().debug('Disabling all registered auto reload tabs');
+        this.deps.log.record(
+          'global',
+          `Global switch turned off for ${this.getNumberOfTabs()} registered tab(s)`
+        );
         this.disable();
       }
     }
@@ -111,6 +151,12 @@ export default class ReloadManager {
   createIdleTimer(timeout: number) {
     getLogger().debug(`Creating idle timer for ${timeout / 1000} seconds`);
 
+    this.idleDueAt = this.deps.now() + timeout;
+    this.deps.log.record(
+      'idle',
+      `Browser is idle: reloading pauses in ${formatMs(timeout)} unless you come back`
+    );
+
     this.idleTimer = setTimeout(() => {
       getLogger().debug(
         `Disabling all tab reload timers due to being idle after ${
@@ -118,19 +164,33 @@ export default class ReloadManager {
         } seconds`
       );
 
-      this.cancelIdleTimer();
-      this.disable();
+      this.clearIdleTimer();
+      this.pausedByIdle = true;
+      this.deps.log.record(
+        'idle',
+        `Idle for ${formatMs(timeout)}: pausing ${this.getNumberOfEnabledTabs()} running tab(s)`
+      );
+      this.disable('paused: browser idle timeout reached');
     }, timeout);
   }
 
-  cancelIdleTimer() {
+  private clearIdleTimer() {
+    if (this.idleTimer !== null) {
+      clearTimeout(this.idleTimer);
+    }
+    this.idleTimer = null;
+    this.idleDueAt = null;
+  }
+
+  /** Called when the user is active again. Returns true if a timer was pending. */
+  cancelIdleTimer(): boolean {
     if (this.idleTimer === null) {
-      return;
+      return false;
     }
 
     getLogger().debug(`Canceling idle timer`);
 
-    clearTimeout(this.idleTimer);
-    this.idleTimer = null;
+    this.clearIdleTimer();
+    return true;
   }
 }
