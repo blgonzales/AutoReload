@@ -10,6 +10,7 @@ import { useTabContext } from '../components/TabProvider';
 import { IntervalInputContext } from '../components/IntervalInputProvider';
 import { useAppContext } from '../components/AppProvider';
 import { Button, Col, Row } from 'react-bootstrap';
+import { forgetRememberedPage } from '../client';
 
 const Main = () => {
   const { tabData: reloadData, setTabData } = useTabContext();
@@ -116,6 +117,28 @@ const Main = () => {
           </Button>
         </Col>
       </Row>
+      {appState.pageRemembered && (
+        <div
+          id="page-remembered"
+          className="d-flex align-items-center mt-2 small"
+        >
+          <span
+            className="me-2"
+            title="AutoReload switches itself on again whenever this exact page is loaded"
+          >
+            Remembered for this page
+          </span>
+          <Button
+            id="forget-page"
+            variant="link"
+            size="sm"
+            className="p-0"
+            onClick={forgetRememberedPage}
+          >
+            Forget
+          </Button>
+        </div>
+      )}
     </IntervalInputContext.Provider>
   );
 };

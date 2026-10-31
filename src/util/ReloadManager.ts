@@ -1,5 +1,5 @@
 import BrowserTab from './BrowserTab';
-import { AppStateType, SettingsType, getLogger } from '../common';
+import { AppStateType, Interval, SettingsType, getLogger } from '../common';
 
 export default class ReloadManager {
   private browserTabs;
@@ -61,6 +61,16 @@ export default class ReloadManager {
     }
 
     return currentTab;
+  }
+
+  async enableBrowserTab(tabId: number, interval: Interval) {
+    let browserTab = this.browserTabs.get(tabId);
+    if (!browserTab) {
+      browserTab = new BrowserTab(tabId, interval, false);
+      this.browserTabs.set(tabId, browserTab);
+    }
+
+    browserTab.update({ enabled: true, interval });
   }
 
   getBrowserTab(tabId: number) {

@@ -9,6 +9,7 @@ import {
 } from './common';
 import { getAppDefaults } from './config';
 import ReloadManager from './util/ReloadManager';
+import RememberedPages from './util/RememberedPages';
 
 export const sendRequest = (message: ClientBrowserMessage) => {
   getLogger().verbose(`[Server] Send request`, message);
@@ -17,7 +18,8 @@ export const sendRequest = (message: ClientBrowserMessage) => {
 
 export const handleRequest = async (
   reloadManager: ReloadManager,
-  event: ServerBrowserMessage
+  event: ServerBrowserMessage,
+  remembered?: RememberedPages
 ) => {
   let tab;
   getLogger().verbose('[Server] Received event message', event);
@@ -38,7 +40,7 @@ export const handleRequest = async (
         },
       });
 
-      sendAppState(reloadManager);
+      sendAppState(reloadManager, remembered);
       break;
 
     case 'updateTabState':
@@ -54,8 +56,27 @@ export const handleRequest = async (
       }
 
       tab.update(event.data as TabStateType);
-      sendAppState(reloadManager);
+      await remembered?.onTabStateUpdated(
+        tab.getTabId(),
+        event.data as TabStateType
+      );
+      sendAppState(reloadManager, remembered);
       break;
+
+    case 'forgetRememberedPages':
+      await remembered?.forgetAll();
+      sendAppState(reloadManager, remembered);
+      break;
+
+    case 'forgetRememberedPage': {
+      const tabId = await reloadManager.getCurrentTabId();
+      const url = tabId ? (await browser.tabs.get(tabId)).url : undefined;
+      if (url) {
+        await remembered?.forget(url);
+      }
+      sendAppState(reloadManager, remembered);
+      break;
+    }
 
     case 'updateAppState':
       const appState = event.data as AppStateType;
@@ -65,7 +86,7 @@ export const handleRequest = async (
       if (appState.defaultSettings !== undefined) {
         saveSettings(appState.defaultSettings);
       }
-      sendAppState(reloadManager);
+      sendAppState(reloadManager, remembered);
       break;
 
     default:
@@ -74,16 +95,32 @@ export const handleRequest = async (
   }
 };
 
-async function sendAppState(reloadManager: ReloadManager) {
+async function sendAppState(
+  reloadManager: ReloadManager,
+  remembered?: RememberedPages
+) {
   const numberOfTabs = reloadManager.getNumberOfTabs();
   const numberOfEnableTabs = reloadManager.getNumberOfEnabledTabs();
   const settings = await getSettings();
+
+  // is the page open in the current tab remembered? (shown in the popup)
+  let pageRemembered = false;
+  try {
+    const tabId = await reloadManager.getCurrentTabId();
+    const url = tabId ? (await browser.tabs.get(tabId)).url : undefined;
+    pageRemembered =
+      settings.rememberPages && !!url && !!(await remembered?.get(url));
+  } catch (error) {
+    getLogger().debug('Could not check whether the page is remembered', error);
+  }
 
   sendRequest({
     type: 'appStateResponse',
     data: {
       enabled: numberOfTabs === numberOfEnableTabs,
       numberOfTabs: numberOfTabs,
+      rememberedPageCount: (await remembered?.count()) ?? 0,
+      pageRemembered,
       ...settings,
       defaultSettings: settings,
     },
