@@ -5,6 +5,7 @@ import {
   getLogger,
   sleep,
 } from '../common';
+import KeepLoaded from './KeepLoaded';
 
 export default class BrowserTab {
   private tabId: number;
@@ -12,8 +13,16 @@ export default class BrowserTab {
   private timer: ReturnType<typeof setInterval> | null;
   private enabled: boolean = false;
 
-  constructor(tabId: number, interval: Interval, enabled: boolean) {
+  private keepLoaded?: KeepLoaded;
+
+  constructor(
+    tabId: number,
+    interval: Interval,
+    enabled: boolean,
+    keepLoaded?: KeepLoaded
+  ) {
     this.tabId = tabId;
+    this.keepLoaded = keepLoaded;
     this.interval = interval;
     this.timer = null;
 
@@ -37,6 +46,7 @@ export default class BrowserTab {
 
     this.timer = setInterval(async () => await this.reload(), timeout);
     this.enabled = true;
+    this.keepLoaded?.want(this.tabId, 'reload', true);
 
     getLogger().debug(
       `Created timer ${this.timer} for tabId ${this.tabId} with ${
@@ -62,6 +72,7 @@ export default class BrowserTab {
     }
 
     this.enabled = false;
+    this.keepLoaded?.want(this.tabId, 'reload', false);
   }
 
   update(reloadData: TabStateType) {
@@ -84,7 +95,11 @@ export default class BrowserTab {
     getLogger().debug(`Reloading tab ${this.tabId}`);
     this.setAddonIcon("icons/loading.gif");
 
-    await browser.tabs.reload(this.tabId);
+    if (this.keepLoaded) {
+      await this.keepLoaded.reload(this.tabId);
+    } else {
+      await browser.tabs.reload(this.tabId);
+    }
 
     await sleep(5000);
     this.setAddonIcon("icons/48.png")

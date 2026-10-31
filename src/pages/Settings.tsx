@@ -66,6 +66,18 @@ const Settings = () => {
     });
   };
 
+  const handleKeepLoadedChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setAppState({
+      ...appState,
+      defaultSettings: {
+        ...appState.defaultSettings,
+        keepTabsLoaded: event.currentTarget.checked,
+      },
+    });
+  };
+
   const handleResetToDefault = () => {
     setAppState({
       ...appState,
@@ -125,6 +137,21 @@ const Settings = () => {
           onChange={handleDefaultChange}
           checked={appState.defaultSettings.defaultEnabled}
         />
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Check
+          type="checkbox"
+          id="keep-tabs-loaded"
+          label="Keep reloading tabs loaded"
+          title="Stop Firefox and add-ons such as Auto Tab Discard from unloading tabs while AutoReload is reloading them"
+          onChange={handleKeepLoadedChange}
+          checked={appState.defaultSettings.keepTabsLoaded}
+        />
+        <Form.Text muted>
+          Works with Auto Tab Discard and Firefox's memory saver: tabs that
+          AutoReload reloads are not unloaded. Turning AutoReload off for a tab
+          lets them be unloaded again.
+        </Form.Text>
       </Form.Group>
       <Form.Group className="d-flex ms-auto justify-content-end">
         <Button variant="secondary" size="sm" onClick={handleResetToDefault}>

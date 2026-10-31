@@ -45,6 +45,7 @@ export type SettingsType = {
   defaultInterval: Interval;
   defaultIdleTimeout: Interval;
   defaultEnabled: boolean;
+  keepTabsLoaded: boolean;
 };
 
 export const getDefaultIntervalSettings = (): IntervalValue[] => {

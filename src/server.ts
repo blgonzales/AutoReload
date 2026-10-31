@@ -8,6 +8,7 @@ import {
   TabStateType,
 } from './common';
 import { getAppDefaults } from './config';
+import KeepLoaded from './util/KeepLoaded';
 import ReloadManager from './util/ReloadManager';
 
 export const sendRequest = (message: ClientBrowserMessage) => {
@@ -17,7 +18,8 @@ export const sendRequest = (message: ClientBrowserMessage) => {
 
 export const handleRequest = async (
   reloadManager: ReloadManager,
-  event: ServerBrowserMessage
+  event: ServerBrowserMessage,
+  keepLoaded?: KeepLoaded
 ) => {
   let tab;
   getLogger().verbose('[Server] Received event message', event);
@@ -63,7 +65,9 @@ export const handleRequest = async (
       reloadManager.update(appState);
 
       if (appState.defaultSettings !== undefined) {
-        saveSettings(appState.defaultSettings);
+        await saveSettings(appState.defaultSettings);
+        // apply a changed "keep tabs loaded" setting to tabs already running
+        await keepLoaded?.refresh();
       }
       sendAppState(reloadManager);
       break;
@@ -90,12 +94,12 @@ async function sendAppState(reloadManager: ReloadManager) {
   });
 }
 
-export const saveSettings = (settings: SettingsType): void => {
+export const saveSettings = async (settings: SettingsType): Promise<void> => {
   getLogger().debug(`Saving settings`, settings);
   if (!isExtension()) {
     return;
   }
-  browser.storage.sync.set({ settings });
+  await browser.storage.sync.set({ settings });
 };
 
 export const getSettings = async (): Promise<SettingsType> => {

@@ -13,6 +13,9 @@ export const defaultInterval: Interval = {
   millis: 0,
 };
 
+// stop Firefox and other add-ons from unloading tabs that are being reloaded
+export const keepTabsLoaded = true;
+
 export const disableAfterIdleState = true;
 export const disableAfterIdleStateThreshold: Interval = {
   hours: 2,
@@ -25,6 +28,7 @@ export const getAppDefaults = (): SettingsType => ({
   defaultEnabled: defaultEnabled,
   defaultInterval: defaultInterval,
   defaultIdleTimeout: disableAfterIdleStateThreshold,
+  keepTabsLoaded: keepTabsLoaded,
 });
 
 export const getDefaultIdleTimeout = async (): Promise<Interval> =>
