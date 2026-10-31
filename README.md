@@ -5,6 +5,15 @@ AutoReload Firefox extension, built to enable the ability to reload browser tabs
 ![screenshot](./docs/screenshot.png)
 ![screenshot](./docs/screenshot2.png)
 
+## Smarter auto reload timing
+
+Two optional timing rules for periodic reload, both in Settings, off by default and applied to every tab:
+
+- **Don't reload while the page is still loading**: a scheduled reload is skipped if the tab has not finished loading, so slow pages are not interrupted before they ever appear. The next scheduled reload happens as usual.
+- **Restart the countdown when I reload or navigate the tab myself**: if you press reload, use the address bar or click a link, the refresh timer starts again from zero, so the page is not reloaded a moment after you just refreshed it.
+
+Useful for slow dashboards and status pages, and for tabs you sometimes work in by hand. No extra permissions are needed.
+
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies

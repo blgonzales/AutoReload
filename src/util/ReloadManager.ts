@@ -1,11 +1,15 @@
 import BrowserTab from './BrowserTab';
+import SmartTiming from './SmartTiming';
 import { AppStateType, SettingsType, getLogger } from '../common';
 
 export default class ReloadManager {
   private browserTabs;
   private idleTimer: ReturnType<typeof setInterval> | null;
 
-  constructor() {
+  private smartTiming?: SmartTiming;
+
+  constructor(smartTiming?: SmartTiming) {
+    this.smartTiming = smartTiming;
     this.browserTabs = new Map<number, BrowserTab>();
     this.idleTimer = null;
   }
@@ -55,7 +59,8 @@ export default class ReloadManager {
       currentTab = new BrowserTab(
         tabId,
         settings.defaultInterval,
-        settings.defaultEnabled
+        settings.defaultEnabled,
+        this.smartTiming
       );
       this.browserTabs.set(tabId, currentTab);
     }

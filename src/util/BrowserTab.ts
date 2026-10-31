@@ -5,15 +5,23 @@ import {
   getLogger,
   sleep,
 } from '../common';
+import SmartTiming from './SmartTiming';
 
 export default class BrowserTab {
   private tabId: number;
   private interval: Interval;
   private timer: ReturnType<typeof setInterval> | null;
   private enabled: boolean = false;
+  private smartTiming?: SmartTiming;
 
-  constructor(tabId: number, interval: Interval, enabled: boolean) {
+  constructor(
+    tabId: number,
+    interval: Interval,
+    enabled: boolean,
+    smartTiming?: SmartTiming
+  ) {
     this.tabId = tabId;
+    this.smartTiming = smartTiming;
     this.interval = interval;
     this.timer = null;
 
@@ -64,6 +72,16 @@ export default class BrowserTab {
     this.enabled = false;
   }
 
+  // start the countdown over, e.g. after the user reloaded the tab
+  restartTimer() {
+    if (!this.enabled) {
+      return;
+    }
+
+    this.clearTimer();
+    this.createTimer();
+  }
+
   update(reloadData: TabStateType) {
     this.clearTimer();
     this.interval = reloadData.interval;
@@ -81,10 +99,23 @@ export default class BrowserTab {
   }
 
   async reload() {
+    if (
+      this.smartTiming &&
+      !(await this.smartTiming.shouldReload(this.tabId))
+    ) {
+      return;
+    }
+
     getLogger().debug(`Reloading tab ${this.tabId}`);
     this.setAddonIcon("icons/loading.gif");
 
-    await browser.tabs.reload(this.tabId);
+    this.smartTiming?.markOwnReload(this.tabId);
+    try {
+      await browser.tabs.reload(this.tabId);
+    } catch (error) {
+      this.smartTiming?.cancelOwnReload(this.tabId);
+      throw error;
+    }
 
     await sleep(5000);
     this.setAddonIcon("icons/48.png")
