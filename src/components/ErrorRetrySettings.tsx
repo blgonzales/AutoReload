@@ -9,6 +9,8 @@ import {
 } from '../common';
 import { useAppContext } from './AppProvider';
 import {
+  notificationPermissions,
+  retryAndNotifyPermissions,
   retryMaxAttemptsChoices,
   retryOnErrorPermissions,
   retryStatusCodePresets,
@@ -38,6 +40,8 @@ const ErrorRetrySettings = () => {
   const { appState, setAppState } = useAppContext();
   const settings = appState.defaultSettings;
   const [hasPermission, setHasPermission] = useState(!isExtension());
+  const [hasNotifyPermission, setHasNotifyPermission] =
+    useState(!isExtension());
   const [customText, setCustomText] = useState(
     customCodesText(settings.retryStatusCodes)
   );
@@ -50,6 +54,10 @@ const ErrorRetrySettings = () => {
     browser.permissions
       .contains(retryOnErrorPermissions)
       .then(setHasPermission)
+      .catch((error) => getLogger().error('Permission check failed', error));
+    browser.permissions
+      .contains(notificationPermissions)
+      .then(setHasNotifyPermission)
       .catch((error) => getLogger().error('Permission check failed', error));
   }, []);
 
@@ -76,14 +84,19 @@ const ErrorRetrySettings = () => {
     }
 
     // must be requested synchronously from the user's click
+    // (one prompt covers the notification permission too, when it is wanted)
+    const wantsNotify = settings.notifyOnRecovery;
     const permissionRequest = browser.permissions.request(
-      retryOnErrorPermissions
+      wantsNotify ? retryAndNotifyPermissions : retryOnErrorPermissions
     );
     update({ retryOnError: true });
 
     permissionRequest
       .then((granted) => {
         setHasPermission(granted);
+        if (wantsNotify) {
+          setHasNotifyPermission(granted);
+        }
         if (!granted) {
           update({ retryOnError: false });
         }
@@ -92,6 +105,27 @@ const ErrorRetrySettings = () => {
         getLogger().error('Permission request failed', error);
         update({ retryOnError: false });
       });
+  };
+
+  const requestNotifyPermission = (): void => {
+    // must be requested synchronously from the user's click
+    browser.permissions
+      .request(notificationPermissions)
+      .then(setHasNotifyPermission)
+      .catch((error) => {
+        getLogger().error('Permission request failed', error);
+        setHasNotifyPermission(false);
+      });
+  };
+
+  const handleNotifyChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const notify = event.currentTarget.checked;
+    update({ notifyOnRecovery: notify });
+    if (notify && isExtension() && !hasNotifyPermission) {
+      requestNotifyPermission();
+    }
   };
 
   const handlePresetChange = (code: number, checked: boolean) => {
@@ -253,6 +287,37 @@ const ErrorRetrySettings = () => {
           </option>
         ))}
       </Form.Select>
+      <Form.Check
+        type="checkbox"
+        id="retry-notify"
+        className="mt-1"
+        label="Notify me when a failing page loads again"
+        title="Show a desktop notification when a page that failed loads successfully again."
+        disabled={!active}
+        checked={settings.notifyOnRecovery}
+        onChange={handleNotifyChange}
+      />
+      <Form.Text className="d-block text-body-secondary" style={hint}>
+        Shows a desktop notification the first time a page that failed loads
+        successfully again, even if the tab is in front. Clicking it brings the
+        tab forward. Useful when a cache or service worker makes reloads look
+        the same. While a page is failing, the toolbar button shows its status
+        code.
+      </Form.Text>
+      {active && settings.notifyOnRecovery && !hasNotifyPermission && (
+        <Form.Text className="d-block text-danger" style={hint}>
+          Notifications are not allowed, so only the toolbar badge and tooltip
+          show the state.{' '}
+          <button
+            type="button"
+            className="btn btn-link btn-sm p-0 align-baseline"
+            style={hint}
+            onClick={requestNotifyPermission}
+          >
+            Allow notifications
+          </button>
+        </Form.Text>
+      )}
     </Form.Group>
   );
 };

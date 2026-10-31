@@ -51,6 +51,7 @@ export type SettingsType = {
   retryBackoff: boolean;
   retryMaxDelay: Interval;
   retryMaxAttempts: number;
+  notifyOnRecovery: boolean;
 };
 
 export const getDefaultIntervalSettings = (): IntervalValue[] => {

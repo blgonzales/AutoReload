@@ -23,6 +23,15 @@ export type ErrorRetryDeps = {
   getTabUrl: (tabId: number) => Promise<string | undefined>;
   reloadTab: (tabId: number) => Promise<void>;
   now?: () => number;
+  // a configured error status was seen; delay is null when retrying gave up
+  onFailure?: (failure: {
+    tabId: number;
+    url: string;
+    statusCode: number;
+    attempt: number; // failed loads of this url so far, this one included
+    delay: number | null; // ms until the next retry
+    maxAttempts: number | null; // retry cap in effect, null = unlimited
+  }) => void;
 };
 
 export type RetryInfo = {
@@ -188,6 +197,14 @@ export default class ErrorRetry {
       getLogger().debug(
         `Tab ${tabId} still returns ${statusCode} for ${url} after ${attempt} retries, giving up`
       );
+      this.deps.onFailure?.({
+        tabId,
+        url,
+        statusCode,
+        attempt: attempt + 1,
+        delay: null,
+        maxAttempts: options.maxAttempts || null,
+      });
       return;
     }
 
@@ -203,6 +220,15 @@ export default class ErrorRetry {
         attempt + 1
       } in ${delay / 1000} seconds`
     );
+
+    this.deps.onFailure?.({
+      tabId,
+      url,
+      statusCode,
+      attempt: attempt + 1,
+      delay,
+      maxAttempts: options.maxAttempts || null,
+    });
 
     const entry: PendingRetry = {
       url,

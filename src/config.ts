@@ -54,10 +54,27 @@ export const retryMaxDelay: Interval = {
   millis: 0,
 };
 
+// desktop notification when a failing page loads successfully again
+export const notifyOnRecovery = true;
+
 // optional permissions needed to see response status codes for error retries
 export const retryOnErrorPermissions: browser.permissions.Permissions = {
   permissions: ['webRequest'],
   origins: ['<all_urls>'],
+};
+
+// needed for the "page is back" desktop notification
+export const notificationPermissions: browser.permissions.Permissions = {
+  permissions: ['notifications'],
+};
+
+// requested together when error retry is switched on, so Firefox asks once
+export const retryAndNotifyPermissions: browser.permissions.Permissions = {
+  permissions: [
+    ...(retryOnErrorPermissions.permissions ?? []),
+    ...(notificationPermissions.permissions ?? []),
+  ],
+  origins: retryOnErrorPermissions.origins,
 };
 
 export const getAppDefaults = (): SettingsType => ({
@@ -70,6 +87,7 @@ export const getAppDefaults = (): SettingsType => ({
   retryBackoff: retryBackoff,
   retryMaxDelay: retryMaxDelay,
   retryMaxAttempts: retryMaxAttempts,
+  notifyOnRecovery: notifyOnRecovery,
 });
 
 export const getDefaultIdleTimeout = async (): Promise<Interval> =>

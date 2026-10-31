@@ -17,6 +17,10 @@ Good for status pages, dashboards and wallboards behind an unreliable proxy, and
 
 Permissions: reading response status codes needs the optional `webRequest` permission for all sites. Firefox asks only when you first switch the setting on; if you never enable it, nothing changes.
 
+## Notify when the site is back (desktop notification when a page loads again)
+
+When a page fails (an HTTP error you chose for retries, or a network error) and then loads again, AutoReload shows a desktop notification once: "example.com is back", with the failed attempts and first error time. Click it to bring the tab forward. While failing, the toolbar button shows the status code. Handy as a site down alert or uptime notification, and when a cache or service worker hides reloads. On by default with error retry; untick **Notify me when a failing page loads again** to turn it off. Needs the optional `notifications` permission, asked together with error retry's.
+
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies
