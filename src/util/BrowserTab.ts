@@ -5,17 +5,32 @@ import {
   getLogger,
   sleep,
 } from '../common';
+import { RandomizeOptions, computeDelay } from './randomDelay';
 
 export default class BrowserTab {
   private tabId: number;
   private interval: Interval;
-  private timer: ReturnType<typeof setInterval> | null;
+  private timer: ReturnType<typeof setTimeout> | null;
   private enabled: boolean = false;
+  private generation: number = 0;
+  private getRandomize: () => Promise<RandomizeOptions>;
+  private rng: () => number;
 
-  constructor(tabId: number, interval: Interval, enabled: boolean) {
+  constructor(
+    tabId: number,
+    interval: Interval,
+    enabled: boolean,
+    getRandomize: () => Promise<RandomizeOptions> = async () => ({
+      randomizeInterval: false,
+      randomizeSpread: 0,
+    }),
+    rng: () => number = Math.random
+  ) {
     this.tabId = tabId;
     this.interval = interval;
     this.timer = null;
+    this.getRandomize = getRandomize;
+    this.rng = rng;
 
     if (enabled) {
       this.createTimer();
@@ -27,20 +42,40 @@ export default class BrowserTab {
   }
 
   createTimer() {
-    if (this.timer !== null) {
-      throw new Error(
-        `Timer ${this.timer} for tabId ${this.tabId} already exists`
-      );
+    if (this.enabled) {
+      throw new Error(`Timer for tabId ${this.tabId} already exists`);
     }
 
-    const timeout = convertIntervalToTimeoutInterval(this.interval);
-
-    this.timer = setInterval(async () => await this.reload(), timeout);
     this.enabled = true;
+    this.scheduleNext(++this.generation);
+  }
+
+  // Each reload is scheduled separately, so the randomize setting is read
+  // (and a new random delay drawn) before every reload.
+  private async scheduleNext(generation: number) {
+    const base = convertIntervalToTimeoutInterval(this.interval);
+    let delay = base;
+
+    try {
+      delay = computeDelay(base, await this.getRandomize(), this.rng);
+    } catch (error) {
+      getLogger().error('Failed to read randomize setting', error);
+    }
+
+    // timer was cleared or recreated while settings were being read
+    if (generation !== this.generation) {
+      return;
+    }
+
+    this.timer = setTimeout(() => {
+      this.timer = null;
+      this.scheduleNext(generation);
+      this.reload();
+    }, delay);
 
     getLogger().debug(
       `Created timer ${this.timer} for tabId ${this.tabId} with ${
-        timeout / 1000
+        delay / 1000
       } second reload`
     );
   }
@@ -56,11 +91,12 @@ export default class BrowserTab {
   clearTimer() {
     if (this.timer !== null) {
       getLogger().debug(`Clearing timer ${this.timer} for tab ${this.tabId}`);
-      clearInterval(this.timer);
+      clearTimeout(this.timer);
 
       this.timer = null;
     }
 
+    this.generation++;
     this.enabled = false;
   }
 

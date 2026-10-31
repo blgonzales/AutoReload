@@ -45,6 +45,8 @@ export type SettingsType = {
   defaultInterval: Interval;
   defaultIdleTimeout: Interval;
   defaultEnabled: boolean;
+  randomizeInterval: boolean;
+  randomizeSpread: number;
 };
 
 export const getDefaultIntervalSettings = (): IntervalValue[] => {

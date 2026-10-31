@@ -1,5 +1,6 @@
 import BrowserTab from './BrowserTab';
 import { AppStateType, SettingsType, getLogger } from '../common';
+import { getSettings } from '../server';
 
 export default class ReloadManager {
   private browserTabs;
@@ -55,7 +56,11 @@ export default class ReloadManager {
       currentTab = new BrowserTab(
         tabId,
         settings.defaultInterval,
-        settings.defaultEnabled
+        settings.defaultEnabled,
+        async () => {
+          const { randomizeInterval, randomizeSpread } = await getSettings();
+          return { randomizeInterval, randomizeSpread };
+        }
       );
       this.browserTabs.set(tabId, currentTab);
     }

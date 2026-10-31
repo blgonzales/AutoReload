@@ -5,6 +5,12 @@ AutoReload Firefox extension, built to enable the ability to reload browser tabs
 ![screenshot](./docs/screenshot.png)
 ![screenshot](./docs/screenshot2.png)
 
+## Randomize reload interval
+
+Vary each reload delay randomly around the interval you set, instead of reloading at exactly the same period every time. It is on by default with a modest ±10% spread (untick **Randomize interval** in Settings to reload on an exact period, or pick ±15% / ±25% / ±50%). A tab set to 60 seconds then reloads somewhere between about 54 and 66 seconds, and a new random delay is chosen each time. Delays never go below 5 seconds.
+
+Good for periodic reload of pages that rate-limit or throttle perfectly regular requests, for spreading the load when many tabs or machines refresh the same status page, and for kiosk or wallboard displays that should not all refresh in lockstep. It changes only the timing; the page is reloaded exactly as before. No extra permissions are needed.
+
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies

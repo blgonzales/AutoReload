@@ -13,6 +13,9 @@ export const defaultInterval: Interval = {
   millis: 0,
 };
 
+export const defaultRandomizeInterval = true;
+export const defaultRandomizeSpread = 0.1;
+
 export const disableAfterIdleState = true;
 export const disableAfterIdleStateThreshold: Interval = {
   hours: 2,
@@ -25,6 +28,8 @@ export const getAppDefaults = (): SettingsType => ({
   defaultEnabled: defaultEnabled,
   defaultInterval: defaultInterval,
   defaultIdleTimeout: disableAfterIdleStateThreshold,
+  randomizeInterval: defaultRandomizeInterval,
+  randomizeSpread: defaultRandomizeSpread,
 });
 
 export const getDefaultIdleTimeout = async (): Promise<Interval> =>
