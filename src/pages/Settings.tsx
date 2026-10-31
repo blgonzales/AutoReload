@@ -6,6 +6,7 @@ import {
   getDefaultIntervalSettings,
 } from '../common';
 import { useAppContext } from '../components/AppProvider';
+import ErrorRetrySettings from '../components/ErrorRetrySettings';
 import { getAppDefaults } from '../config';
 
 const defaultIntervals = getDefaultIntervalSettings();
@@ -126,6 +127,7 @@ const Settings = () => {
           checked={appState.defaultSettings.defaultEnabled}
         />
       </Form.Group>
+      <ErrorRetrySettings />
       <Form.Group className="d-flex ms-auto justify-content-end">
         <Button variant="secondary" size="sm" onClick={handleResetToDefault}>
           Reset to Default
