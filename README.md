@@ -5,6 +5,18 @@ AutoReload Firefox extension, built to enable the ability to reload browser tabs
 ![screenshot](./docs/screenshot.png)
 ![screenshot](./docs/screenshot2.png)
 
+## Offline mode: work offline, show the last good copy when the site is down
+
+Keep a page useful even when its site is down or your network drops. Open the site, go to Settings, press **Allow offline mode** once, then pick a mode under **Offline mode for <site>**. It is off by default and is set per site.
+
+- **Network first** (recommended): always try the site; if it fails, or answers 502/503/504 or Cloudflare 520-524, show the last good copy.
+- **Stale while revalidate**: show the saved copy at once and refresh it in the background.
+- **Cache first**: use the saved copy whenever there is one.
+
+Use **Clear saved copies for this site** to cache pages for offline use no more. Works on https sites and localhost, in normal windows only. Copies, including logged-in pages, stay in the site's own browser storage. Hard reloads skip saved copies.
+
+Permissions: optional access to all sites and blocking web requests, asked only when you press the button.
+
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies

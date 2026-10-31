@@ -21,6 +21,16 @@ export const disableAfterIdleStateThreshold: Interval = {
   millis: 0,
 };
 
+// optional permissions needed for offline mode (see util/OfflineMode.ts)
+export const offlineModePermissions = {
+  permissions: [
+    'webRequest',
+    'webRequestBlocking',
+    'webRequestFilterResponse.serviceWorkerScript',
+  ],
+  origins: ['<all_urls>'],
+} as browser.permissions.Permissions;
+
 export const getAppDefaults = (): SettingsType => ({
   defaultEnabled: defaultEnabled,
   defaultInterval: defaultInterval,
