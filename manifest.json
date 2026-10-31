@@ -23,5 +23,11 @@
       "strict_min_version": "58.0"
     }
   },
-  "permissions": ["tabs", "idle", "storage"]
+  "permissions": ["tabs", "idle", "storage"],
+  "optional_permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "webRequestFilterResponse.serviceWorkerScript",
+    "<all_urls>"
+  ]
 }

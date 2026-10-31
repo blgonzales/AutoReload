@@ -7,6 +7,7 @@ import {
 } from '../common';
 import { useAppContext } from '../components/AppProvider';
 import { getAppDefaults } from '../config';
+import OfflineModeSettings from '../components/OfflineModeSettings';
 
 const defaultIntervals = getDefaultIntervalSettings();
 const defaultIdleIntervals = getDefaultIdleTimeoutSettings();
@@ -126,6 +127,7 @@ const Settings = () => {
           checked={appState.defaultSettings.defaultEnabled}
         />
       </Form.Group>
+      <OfflineModeSettings />
       <Form.Group className="d-flex ms-auto justify-content-end">
         <Button variant="secondary" size="sm" onClick={handleResetToDefault}>
           Reset to Default
