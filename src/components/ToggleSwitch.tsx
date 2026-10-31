@@ -5,6 +5,7 @@ type ToggleSwitchProps = {
   enabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   title?: string;
+  label?: string;
 };
 
 function ToggleSwitch(props: ToggleSwitchProps) {
@@ -12,7 +13,12 @@ function ToggleSwitch(props: ToggleSwitchProps) {
 
   return (
     <div title={title}>
-      <Form.Check type="switch" onChange={props.onChange} checked={enabled} />
+      <Form.Check
+        type="switch"
+        onChange={props.onChange}
+        checked={enabled}
+        label={props.label}
+      />
     </div>
   );
 }

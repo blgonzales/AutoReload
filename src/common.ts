@@ -38,6 +38,7 @@ export interface TabStateType {
 export interface AppStateType {
   enabled: boolean;
   numberOfTabs: number;
+  numberOfEnabledTabs?: number;
   defaultSettings: SettingsType;
 }
 

@@ -84,6 +84,7 @@ async function sendAppState(reloadManager: ReloadManager) {
     data: {
       enabled: numberOfTabs === numberOfEnableTabs,
       numberOfTabs: numberOfTabs,
+      numberOfEnabledTabs: numberOfEnableTabs,
       ...settings,
       defaultSettings: settings,
     },
