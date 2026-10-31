@@ -9,7 +9,7 @@ import IntervalNumberInput from '../components/IntervalNumberInput';
 import { useTabContext } from '../components/TabProvider';
 import { IntervalInputContext } from '../components/IntervalInputProvider';
 import { useAppContext } from '../components/AppProvider';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Form, Row } from 'react-bootstrap';
 
 const Main = () => {
   const { tabData: reloadData, setTabData } = useTabContext();
@@ -36,7 +36,9 @@ const Main = () => {
     });
   };
 
-  const saveHandler = () => {
+  // submitting the form (Enter in an interval input or the Update button)
+  const saveHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     getLogger().verbose(`saveHandler`, unSavedInterval);
 
     if (convertIntervalToTimeoutInterval(unSavedInterval) < 5000) {
@@ -73,49 +75,52 @@ const Main = () => {
         setUnSavedIntervals: setUnSavedInterval,
       }}
     >
-      <div className="input-title">Set Interval</div>
-      <div className="input-wrapper">
-        <IntervalNumberInput name="hours" label="Hours" />
-        <div className="time-separator">:</div>
-        <IntervalNumberInput name="minutes" label="Minutes" />
-        <div className="time-separator">:</div>
-        <IntervalNumberInput name="seconds" label="Seconds" />
-      </div>
-      <Row>
-        <Col className="d-flex align-items-center">
-          <ToggleSwitch
-            enabled={appState.enabled}
-            onChange={handleGlobalEnabled}
-            title={`${appState.enabled ? 'Disable' : 'Enable'} AutoReload for ${
-              appState.numberOfTabs
-            } Registered Tab${appState.numberOfTabs > 1 ? 's' : ''}`}
-          />
-        </Col>
+      <Form noValidate onSubmit={saveHandler}>
+        <div className="input-title">Set Interval</div>
+        <div className="input-wrapper">
+          <IntervalNumberInput name="hours" label="Hours" />
+          <div className="time-separator">:</div>
+          <IntervalNumberInput name="minutes" label="Minutes" />
+          <div className="time-separator">:</div>
+          <IntervalNumberInput name="seconds" label="Seconds" />
+        </div>
+        <Row>
+          <Col className="d-flex align-items-center">
+            <ToggleSwitch
+              enabled={appState.enabled}
+              onChange={handleGlobalEnabled}
+              title={`${appState.enabled ? 'Disable' : 'Enable'} AutoReload for ${
+                appState.numberOfTabs
+              } Registered Tab${appState.numberOfTabs > 1 ? 's' : ''}`}
+            />
+          </Col>
 
-        <Col className="d-flex ms-auto justify-content-end">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={saveHandler}
-            disabled={!hasUnsavedIntervals || !reloadData.enabled}
-            style={{ marginRight: '.5em' }}
-          >
-            Update
-          </Button>
+          <Col className="d-flex ms-auto justify-content-end">
+            <Button
+              variant="primary"
+              size="sm"
+              type="submit"
+              disabled={!hasUnsavedIntervals || !reloadData.enabled}
+              style={{ marginRight: '.5em' }}
+            >
+              Update
+            </Button>
 
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={resetHandler}
-            disabled={
-              !reloadData.enabled ||
-              (!reloadData.enabled && !hasUnsavedIntervals)
-            }
-          >
-            Reset
-          </Button>
-        </Col>
-      </Row>
+            <Button
+              variant="secondary"
+              size="sm"
+              type="button"
+              onClick={resetHandler}
+              disabled={
+                !reloadData.enabled ||
+                (!reloadData.enabled && !hasUnsavedIntervals)
+              }
+            >
+              Reset
+            </Button>
+          </Col>
+        </Row>
+      </Form>
     </IntervalInputContext.Provider>
   );
 };

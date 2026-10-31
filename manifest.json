@@ -23,5 +23,13 @@
       "strict_min_version": "58.0"
     }
   },
+  "commands": {
+    "toggle-current-tab": {
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
+      "description": "Toggle AutoReload for the current tab"
+    }
+  },
   "permissions": ["tabs", "idle", "storage"]
 }

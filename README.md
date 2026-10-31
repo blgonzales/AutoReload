@@ -7,6 +7,13 @@ AutoReload Firefox extension, built to enable the ability to reload browser tabs
 
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
+## Keyboard shortcuts for auto reload
+
+- `Alt+Shift+A` turns auto reload on or off for the current tab, the same as the switch in the popup header, so you can start or stop the refresh timer without opening the popup. Change the key in `about:addons` -> gear icon -> Manage Extension Shortcuts.
+- In the popup, press Enter in an interval field to apply it (same as clicking Update).
+
+The shortcut is a manifest `commands` entry, which needs no extra permission. It is handy for a quick "reload this page every X seconds" on a dashboard or status page, and to pause it again just as quickly.
+
 ## Dependencies
 
 - Node 19.x https://nodejs.org/en/download
