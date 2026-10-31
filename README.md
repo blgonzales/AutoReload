@@ -5,6 +5,12 @@ AutoReload Firefox extension, built to enable the ability to reload browser tabs
 ![screenshot](./docs/screenshot.png)
 ![screenshot](./docs/screenshot2.png)
 
+## Countdown badge: see when the next auto refresh happens
+
+Show the time until the next reload on the toolbar icon, so you can see the refresh timer without opening the popup. It is on by default (untick **Show countdown on toolbar icon** in Settings to turn it off). Each tab with auto reload on then displays a green badge such as `89s`, `4m` or `2h`, counting down to its next reload, and its tooltip says how often it reloads and when the next reload is. If auto reload was switched off because you were away (idle timeout) the badge shows an orange `II`; while a failed page waits to be retried it shows `R`. The badge is per tab and is removed when auto reload is switched off for that tab or the tab is closed.
+
+Handy when you run several refreshing tabs (dashboards, monitoring and status pages, live scores, CI pages) or a kiosk display and want to know at a glance that the page is still being kept fresh. It needs no extra permissions.
+
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies

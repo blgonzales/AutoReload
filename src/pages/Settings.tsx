@@ -66,6 +66,18 @@ const Settings = () => {
     });
   };
 
+  const handleShowCountdownChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setAppState({
+      ...appState,
+      defaultSettings: {
+        ...appState.defaultSettings,
+        showCountdown: event.currentTarget.checked,
+      },
+    });
+  };
+
   const handleResetToDefault = () => {
     setAppState({
       ...appState,
@@ -124,6 +136,16 @@ const Settings = () => {
           title="Start AutoReload by default when opening"
           onChange={handleDefaultChange}
           checked={appState.defaultSettings.defaultEnabled}
+        />
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Check
+          type="checkbox"
+          id="show-countdown"
+          label="Show countdown on toolbar icon"
+          title="Show a coloured badge with the time until the next reload on the toolbar icon of each tab with auto reload on, and a matching tooltip"
+          onChange={handleShowCountdownChange}
+          checked={appState.defaultSettings.showCountdown}
         />
       </Form.Group>
       <Form.Group className="d-flex ms-auto justify-content-end">
