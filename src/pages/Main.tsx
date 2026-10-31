@@ -85,6 +85,9 @@ const Main = () => {
         <Col className="d-flex align-items-center">
           <ToggleSwitch
             enabled={appState.enabled}
+            label={`All tabs (${appState.numberOfEnabledTabs ?? 0} of ${
+              appState.numberOfTabs
+            } on)`}
             onChange={handleGlobalEnabled}
             title={`${appState.enabled ? 'Disable' : 'Enable'} AutoReload for ${
               appState.numberOfTabs

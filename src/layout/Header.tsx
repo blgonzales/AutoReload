@@ -52,6 +52,7 @@ const Header = () => {
           <ToggleSwitch
             enabled={tabData.enabled}
             onChange={handleIsEnabled}
+            label="This tab"
             title={`${tabData.enabled ? 'Disable' : 'Enable'} AutoReload for the Current Tab`}
           />
           <div

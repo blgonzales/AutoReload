@@ -11,6 +11,16 @@ import { getAppDefaults } from '../config';
 const defaultIntervals = getDefaultIntervalSettings();
 const defaultIdleIntervals = getDefaultIdleTimeoutSettings();
 
+// short always-visible explanation under a setting (tooltips are easy to miss)
+const Help = (props: { children: React.ReactNode }) => (
+  <Form.Text
+    className="d-block text-body-secondary mt-1"
+    style={{ fontSize: '.78em', lineHeight: 1.3 }}
+  >
+    {props.children}
+  </Form.Text>
+);
+
 const Settings = () => {
   const { appState, setAppState } = useAppContext();
 
@@ -77,13 +87,16 @@ const Settings = () => {
     <Form>
       <div style={{ marginBottom: '.5em' }}>Settings</div>
       <Form.Group className="mb-3">
-        <Form.Label size="sm">Default Interval</Form.Label>
+        <Form.Label size="sm" className="mb-1">
+          Default interval
+        </Form.Label>
         <Form.Select
           size="sm"
           value={convertIntervalToTimeoutInterval(
             appState.defaultSettings.defaultInterval
           )}
           onChange={handleChangeInterval}
+          title="How often a tab reloads when you switch AutoReload on for it"
         >
           {defaultIntervals.map((interval) => {
             return (
@@ -94,10 +107,16 @@ const Settings = () => {
             );
           })}
         </Form.Select>
+        <Help>
+          How often a tab reloads when you switch AutoReload on for it (each
+          tab can be changed on the main screen).
+        </Help>
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label size="sm">Default Idle Timeout</Form.Label>
+        <Form.Label size="sm" className="mb-1">
+          Stop when I&apos;m away for (idle timeout)
+        </Form.Label>
         <Form.Select
           size="sm"
           name="defaultIdleTimeout"
@@ -105,6 +124,7 @@ const Settings = () => {
             appState.defaultSettings.defaultIdleTimeout
           )}
           onChange={handleChangeIdleTimeout}
+          title="Switch AutoReload off on all tabs after this long without mouse or keyboard input"
         >
           {defaultIdleIntervals.map((interval) => {
             return (
@@ -115,16 +135,25 @@ const Settings = () => {
             );
           })}
         </Form.Select>
+        <Help>
+          Not a reload interval: after this long with no mouse or keyboard
+          input, AutoReload switches off on all tabs and stays off until you
+          switch it on again.
+        </Help>
       </Form.Group>
       <Form.Group className="mb-3">
         <Form.Check
           type="checkbox"
           id="default-enabled"
-          label="Default enabled"
-          title="Start AutoReload by default when opening"
+          label="Start reloading automatically (default enabled)"
+          title="Switch AutoReload on for a tab as soon as you open this popup on it"
           onChange={handleDefaultChange}
           checked={appState.defaultSettings.defaultEnabled}
         />
+        <Help>
+          Opening this popup on a tab for the first time switches AutoReload on
+          for it, with the default interval.
+        </Help>
       </Form.Group>
       <Form.Group className="d-flex ms-auto justify-content-end">
         <Button variant="secondary" size="sm" onClick={handleResetToDefault}>
