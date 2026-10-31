@@ -45,6 +45,13 @@ export type SettingsType = {
   defaultInterval: Interval;
   defaultIdleTimeout: Interval;
   defaultEnabled: boolean;
+  retryOnError: boolean;
+  retryStatusCodes: number[];
+  retryDelay: Interval;
+  retryBackoff: boolean;
+  retryMaxDelay: Interval;
+  retryMaxAttempts: number;
+  notifyOnRecovery: boolean;
 };
 
 export const getDefaultIntervalSettings = (): IntervalValue[] => {
@@ -100,6 +107,20 @@ export const getDefaultIdleTimeoutSettings = (): IntervalValue[] => {
     })
   );
 };
+
+export const getRetryDelaySettings = (): IntervalValue[] =>
+  [5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600].map((totalSeconds) => {
+    const interval = {
+      hours: Math.floor(totalSeconds / 3600),
+      minutes: Math.floor(totalSeconds / 60) % 60,
+      seconds: totalSeconds % 60,
+      millis: 0,
+    };
+    return {
+      ...interval,
+      value: convertIntervalToTimeoutInterval(interval),
+    };
+  });
 
 export const convertIntervalToTimeoutInterval = (
   interval: Interval
