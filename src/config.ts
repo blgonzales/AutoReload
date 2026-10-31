@@ -21,10 +21,13 @@ export const disableAfterIdleStateThreshold: Interval = {
   millis: 0,
 };
 
+export const rememberPages = true;
+
 export const getAppDefaults = (): SettingsType => ({
   defaultEnabled: defaultEnabled,
   defaultInterval: defaultInterval,
   defaultIdleTimeout: disableAfterIdleStateThreshold,
+  rememberPages: rememberPages,
 });
 
 export const getDefaultIdleTimeout = async (): Promise<Interval> =>

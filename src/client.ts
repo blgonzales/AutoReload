@@ -83,3 +83,23 @@ export const updateAppState = (newData: AppStateType) => {
     data: newData,
   });
 };
+
+export const forgetRememberedPage = () => {
+  if (!isExtension()) {
+    return;
+  }
+
+  sendRequest({
+    type: 'forgetRememberedPage',
+  });
+};
+
+export const forgetRememberedPages = () => {
+  if (!isExtension()) {
+    return;
+  }
+
+  sendRequest({
+    type: 'forgetRememberedPages',
+  });
+};

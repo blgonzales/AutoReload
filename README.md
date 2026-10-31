@@ -5,6 +5,12 @@ AutoReload Firefox extension, built to enable the ability to reload browser tabs
 ![screenshot](./docs/screenshot.png)
 ![screenshot](./docs/screenshot2.png)
 
+## Remember auto reload settings per page
+
+Have AutoReload switch itself back on for pages you have set up before. It is on by default (untick **Remember reload settings per page** in Settings to turn it off). The popup shows **Remembered for this page** with a **Forget** link for the current page. When you enable auto reload on a tab (or change its interval), the interval is saved for that page's exact URL (the `#fragment` is ignored); turning it off for the tab removes it. Whenever a tab finishes loading a remembered URL, including tabs restored when the browser starts, auto reload is enabled with the saved interval.
+
+Good for dashboards, monitoring and status pages, ticket or stock availability pages and wallboard tabs you reopen every day. Settings shows how many pages are remembered and has a **Forget all** button. Up to 200 pages are kept (oldest dropped first), stored on this device only and not synced. No extra permissions are needed.
+
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies

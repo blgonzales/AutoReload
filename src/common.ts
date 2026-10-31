@@ -13,7 +13,12 @@ type IntervalValue = Interval & {
 
 type ResponseType = 'tabStateResponse';
 type ClientMessageType = 'tabStateResponse' | 'appStateResponse';
-type ServerMessageType = 'getTabState' | 'updateTabState' | 'updateAppState';
+type ServerMessageType =
+  | 'getTabState'
+  | 'updateTabState'
+  | 'updateAppState'
+  | 'forgetRememberedPages'
+  | 'forgetRememberedPage';
 
 export type ResponseMessage = {
   type: ResponseType;
@@ -38,6 +43,8 @@ export interface TabStateType {
 export interface AppStateType {
   enabled: boolean;
   numberOfTabs: number;
+  rememberedPageCount?: number;
+  pageRemembered?: boolean;
   defaultSettings: SettingsType;
 }
 
@@ -45,6 +52,7 @@ export type SettingsType = {
   defaultInterval: Interval;
   defaultIdleTimeout: Interval;
   defaultEnabled: boolean;
+  rememberPages: boolean;
 };
 
 export const getDefaultIntervalSettings = (): IntervalValue[] => {
