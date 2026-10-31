@@ -13,6 +13,8 @@ export const defaultInterval: Interval = {
   millis: 0,
 };
 
+export const showCountdown = true;
+
 export const disableAfterIdleState = true;
 export const disableAfterIdleStateThreshold: Interval = {
   hours: 2,
@@ -25,6 +27,7 @@ export const getAppDefaults = (): SettingsType => ({
   defaultEnabled: defaultEnabled,
   defaultInterval: defaultInterval,
   defaultIdleTimeout: disableAfterIdleStateThreshold,
+  showCountdown: showCountdown,
 });
 
 export const getDefaultIdleTimeout = async (): Promise<Interval> =>
