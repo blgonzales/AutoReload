@@ -7,6 +7,7 @@ import {
 } from '../common';
 import { useAppContext } from '../components/AppProvider';
 import { getAppDefaults } from '../config';
+import { randomizeSpreadOptions } from '../util/randomDelay';
 
 const defaultIntervals = getDefaultIntervalSettings();
 const defaultIdleIntervals = getDefaultIdleTimeoutSettings();
@@ -62,6 +63,30 @@ const Settings = () => {
       defaultSettings: {
         ...appState.defaultSettings,
         defaultEnabled: event.currentTarget.checked,
+      },
+    });
+  };
+
+  const handleRandomizeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setAppState({
+      ...appState,
+      defaultSettings: {
+        ...appState.defaultSettings,
+        randomizeInterval: event.currentTarget.checked,
+      },
+    });
+  };
+
+  const handleRandomizeSpreadChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ): void => {
+    setAppState({
+      ...appState,
+      defaultSettings: {
+        ...appState.defaultSettings,
+        randomizeSpread: Number(event.currentTarget.value),
       },
     });
   };
@@ -125,6 +150,30 @@ const Settings = () => {
           onChange={handleDefaultChange}
           checked={appState.defaultSettings.defaultEnabled}
         />
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Check
+          type="checkbox"
+          id="randomize-interval"
+          label="Randomize interval"
+          title="Vary each reload delay randomly around the tab interval (never below 5 seconds)"
+          onChange={handleRandomizeChange}
+          checked={appState.defaultSettings.randomizeInterval}
+        />
+        <Form.Select
+          size="sm"
+          name="randomizeSpread"
+          className="mt-1"
+          disabled={!appState.defaultSettings.randomizeInterval}
+          value={appState.defaultSettings.randomizeSpread}
+          onChange={handleRandomizeSpreadChange}
+        >
+          {randomizeSpreadOptions.map((spread) => (
+            <option key={spread} value={spread}>{`±${Math.round(
+              spread * 100
+            )}%`}</option>
+          ))}
+        </Form.Select>
       </Form.Group>
       <Form.Group className="d-flex ms-auto justify-content-end">
         <Button variant="secondary" size="sm" onClick={handleResetToDefault}>
