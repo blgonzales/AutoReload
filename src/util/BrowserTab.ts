@@ -5,6 +5,8 @@ import {
   getLogger,
   sleep,
 } from '../common';
+import { getSettings } from '../server';
+import { reloadTab } from './reloadTab';
 
 export default class BrowserTab {
   private tabId: number;
@@ -84,7 +86,10 @@ export default class BrowserTab {
     getLogger().debug(`Reloading tab ${this.tabId}`);
     this.setAddonIcon("icons/loading.gif");
 
-    await browser.tabs.reload(this.tabId);
+    await reloadTab(this.tabId, {
+      getBypassCache: async () => (await getSettings()).bypassCache,
+      reload: (tabId, props) => browser.tabs.reload(tabId, props),
+    });
 
     await sleep(5000);
     this.setAddonIcon("icons/48.png")

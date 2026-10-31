@@ -6,6 +6,8 @@ export const isVerboseModeEnabled = () => false;
 
 export const defaultEnabled = false;
 
+export const defaultBypassCache = false;
+
 export const defaultInterval: Interval = {
   hours: 0,
   minutes: 1,
@@ -25,6 +27,7 @@ export const getAppDefaults = (): SettingsType => ({
   defaultEnabled: defaultEnabled,
   defaultInterval: defaultInterval,
   defaultIdleTimeout: disableAfterIdleStateThreshold,
+  bypassCache: defaultBypassCache,
 });
 
 export const getDefaultIdleTimeout = async (): Promise<Interval> =>

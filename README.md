@@ -5,6 +5,12 @@ AutoReload Firefox extension, built to enable the ability to reload browser tabs
 ![screenshot](./docs/screenshot.png)
 ![screenshot](./docs/screenshot2.png)
 
+## Hard reload every time (bypass cache on auto refresh)
+
+Reload tabs like Ctrl+Shift+R, so each automatic refresh fetches a fresh copy instead of a cached one. It is off by default. Turn it on in Settings by ticking **Bypass cache when reloading (hard reload)**; it applies to every tab and takes effect on the next reload.
+
+Useful when a page is served with long cache lifetimes and a normal auto refresh would keep showing the old version: status pages, monitoring dashboards, CI build pages, live scores, or a page you are developing and want to keep fresh. It makes no difference for pages that are never cached. No extra permissions are needed.
+
 Official firefox addon listing: https://addons.mozilla.org/en-US/firefox/addon/auto-reload/
 
 ## Dependencies

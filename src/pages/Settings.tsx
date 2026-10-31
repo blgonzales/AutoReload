@@ -66,6 +66,18 @@ const Settings = () => {
     });
   };
 
+  const handleBypassCacheChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setAppState({
+      ...appState,
+      defaultSettings: {
+        ...appState.defaultSettings,
+        bypassCache: event.currentTarget.checked,
+      },
+    });
+  };
+
   const handleResetToDefault = () => {
     setAppState({
       ...appState,
@@ -124,6 +136,16 @@ const Settings = () => {
           title="Start AutoReload by default when opening"
           onChange={handleDefaultChange}
           checked={appState.defaultSettings.defaultEnabled}
+        />
+      </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Check
+          type="checkbox"
+          id="bypass-cache"
+          label="Bypass cache when reloading (hard reload)"
+          title="Reload tabs like Ctrl+Shift+R, ignoring cached copies"
+          onChange={handleBypassCacheChange}
+          checked={appState.defaultSettings.bypassCache}
         />
       </Form.Group>
       <Form.Group className="d-flex ms-auto justify-content-end">
