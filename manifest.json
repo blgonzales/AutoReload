@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "AutoReload",
   "version": "2.2.0",
-  "description": "An extension that automatically reloads the specified tabs.",
+  "description": "Auto refresh tabs: reload any page every X seconds, minutes or hours. Per-tab timers, pause when idle, minimal permissions.",
   "icons": {
     "48": "icons/48.png",
     "96": "icons/96.png"
